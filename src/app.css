@@ -35,6 +35,20 @@
 	--color-statusbar-fg: var(--color-muted);
 }
 
+:root[data-theme='light'] {
+	--color-bg: #f5f2eb;
+	--color-accent: #166534;
+	--color-muted: #1a1a1a;
+	--color-chrome: #ebe8e1;
+	--color-sidebar-bg: #f0ece4;
+	--color-border: #d4cfc4;
+	--color-editor-bg: #f5f2eb;
+	--color-tab-bar: #ebe8e1;
+	--color-tab-active: #f5f2eb;
+	--color-statusbar-bg: #e8e4dc;
+	--color-statusbar-fg: #166534;
+}
+
 *,
 *::before,
 *::after {
@@ -51,6 +65,21 @@ body {
 	font-family: 'JetBrains Mono', ui-monospace, monospace;
 	background-color: var(--color-bg);
 	color: var(--color-muted);
+	transition:
+		background-color 300ms ease,
+		color 300ms ease;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+}
+
+.ide-root,
+.titlebar,
+.sidebar,
+.ide-editor,
+.editor-tab-row,
+.statusbar {
+	transition:
+		background-color 300ms ease,
+		color 300ms ease,
+		border-color 300ms ease;
 }

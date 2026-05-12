@@ -1,10 +1,13 @@
+<script lang="ts">
+	import { theme } from '$lib/stores/theme';
+</script>
+
 <header
 	class="titlebar flex h-9 shrink-0 items-center justify-between border-b px-3"
 	style="background-color: var(--color-chrome); border-color: var(--color-border);"
-	aria-hidden="true"
 >
-	<div class="flex items-center gap-3">
-		<div class="flex gap-1.5" aria-hidden="true">
+	<div class="flex items-center gap-3" aria-hidden="true">
+		<div class="flex gap-1.5">
 			<span class="h-3 w-3 rounded-full" style="background: #ff5f57"></span>
 			<span class="h-3 w-3 rounded-full" style="background: #febc2e"></span>
 			<span class="h-3 w-3 rounded-full" style="background: #28c840"></span>
@@ -15,17 +18,32 @@
 			<span style="color: var(--color-muted)">Developer</span>
 		</span>
 	</div>
-	<div
-		class="pointer-events-none flex h-7 w-7 items-center justify-center rounded opacity-50"
-		style="color: var(--color-accent)"
+	<button
+		type="button"
+		class="flex h-7 w-7 items-center justify-center rounded transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+		style="color: var(--color-accent); outline-color: var(--color-accent);"
+		aria-label={$theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+		onclick={() => theme.toggle()}
 	>
-		<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-			<path
-				d="M21 14.5A7.5 7.5 0 0 1 9.5 3a7.5 7.5 0 1 0 11.5 11.5Z"
-				stroke="currentColor"
-				stroke-width="1.5"
-				stroke-linejoin="round"
-			/>
-		</svg>
-	</div>
+		{#if $theme === 'dark'}
+			<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+				<circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.5" />
+				<path
+					d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
+					stroke="currentColor"
+					stroke-width="1.5"
+					stroke-linecap="round"
+				/>
+			</svg>
+		{:else}
+			<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+				<path
+					d="M21 14.5A7.5 7.5 0 0 1 9.5 3a7.5 7.5 0 1 0 11.5 11.5Z"
+					stroke="currentColor"
+					stroke-width="1.5"
+					stroke-linejoin="round"
+				/>
+			</svg>
+		{/if}
+	</button>
 </header>

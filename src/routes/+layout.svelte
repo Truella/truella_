@@ -1,10 +1,20 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import '../app.css';
 	import TitleBar from '$lib/components/ide/TitleBar.svelte';
 	import Sidebar from '$lib/components/ide/Sidebar.svelte';
 	import StatusBar from '$lib/components/ide/StatusBar.svelte';
+	import { theme } from '$lib/stores/theme';
 
 	let { children } = $props();
+
+	$effect(() => {
+		if (!browser) return;
+		const unsub = theme.subscribe((value) => {
+			document.documentElement.setAttribute('data-theme', value);
+		});
+		return unsub;
+	});
 </script>
 
 <svelte:head>
