@@ -83,3 +83,34 @@ body {
 		color 300ms ease,
 		border-color 300ms ease;
 }
+
+a,
+button,
+[role='button'] {
+	cursor: pointer;
+}
+
+.sidebar-link {
+	display: block;
+	text-decoration: none;
+	color: inherit;
+	border-radius: 2px;
+	padding: 0.125rem 0.25rem;
+	margin: 0 -0.25rem;
+	transition:
+		background-color 150ms ease,
+		color 150ms ease;
+}
+
+.sidebar-link:hover {
+	background-color: color-mix(in srgb, var(--color-muted) 12%, transparent);
+}
+
+.sidebar-link--active {
+	color: var(--color-accent);
+	background-color: color-mix(in srgb, var(--color-accent) 14%, transparent);
+}
+
+.sidebar-link--active:hover {
+	background-color: color-mix(in srgb, var(--color-accent) 20%, transparent);
+}

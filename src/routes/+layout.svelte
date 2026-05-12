@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
+	import { page } from '$app/stores';
 	import '../app.css';
+	import { editorTabLabel } from '$lib/editorTabLabel';
 	import TitleBar from '$lib/components/ide/TitleBar.svelte';
 	import Sidebar from '$lib/components/ide/Sidebar.svelte';
 	import StatusBar from '$lib/components/ide/StatusBar.svelte';
@@ -42,7 +44,7 @@
 					style="background-color: var(--color-tab-active); border-color: var(--color-border); color: var(--color-accent);"
 				>
 					<span class="opacity-80" aria-hidden="true">⌘</span>
-					<span class="truncate font-medium">README.md</span>
+					<span class="truncate font-medium">{editorTabLabel($page.url.pathname, $page.url.hash)}</span>
 				</div>
 				<div
 					class="h-8 flex-1 cursor-default border-b"

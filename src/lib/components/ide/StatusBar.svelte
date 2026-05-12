@@ -1,7 +1,15 @@
+<script lang="ts">
+	import { page } from '$app/stores';
+
+	function openPath(pathname: string): string {
+		if (!pathname || pathname === '/') return '/';
+		return pathname.endsWith('/') && pathname.length > 1 ? pathname.slice(0, -1) : pathname;
+	}
+</script>
+
 <footer
 	class="statusbar flex h-6 shrink-0 items-center justify-between gap-4 border-t px-2 text-[11px] tabular-nums"
 	style="background-color: var(--color-statusbar-bg); color: var(--color-statusbar-fg); border-color: var(--color-border);"
-	aria-hidden="true"
 >
 	<div class="flex min-w-0 items-center gap-2">
 		<span class="inline-flex items-center gap-1" style="color: var(--color-accent)" aria-hidden="true">
@@ -13,7 +21,9 @@
 			main
 		</span>
 	</div>
-	<div class="min-w-0 flex-1 truncate text-center" style="color: var(--color-muted)">README.md</div>
+	<div class="min-w-0 flex-1 truncate text-center" style="color: var(--color-muted)">
+		{openPath($page.url.pathname)}
+	</div>
 	<div class="flex shrink-0 items-center gap-3" style="color: var(--color-muted)">
 		<span>Ln 1, Col 1</span>
 		<span class="hidden sm:inline">UTF-8</span>
