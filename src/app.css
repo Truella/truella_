@@ -1,0 +1,56 @@
+@import 'tailwindcss';
+
+@theme {
+	--font-sans: 'JetBrains Mono', ui-monospace, monospace;
+	--font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+@font-face {
+	font-family: 'JetBrains Mono';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url('/fonts/JetBrainsMono-Regular.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'JetBrains Mono';
+	font-style: normal;
+	font-weight: 600;
+	font-display: swap;
+	src: url('/fonts/JetBrainsMono-SemiBold.woff2') format('woff2');
+}
+
+:root {
+	--color-bg: #0d0d0d;
+	--color-accent: #4ade80;
+	--color-muted: #a0a0a0;
+	--color-chrome: #1a1a1a;
+	--color-sidebar-bg: #121212;
+	--color-border: #2a2a2a;
+	--color-editor-bg: #0d0d0d;
+	--color-tab-bar: #1e1e1e;
+	--color-tab-active: #0d0d0d;
+	--color-statusbar-bg: #141414;
+	--color-statusbar-fg: var(--color-muted);
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	height: 100%;
+	margin: 0;
+}
+
+body {
+	font-family: 'JetBrains Mono', ui-monospace, monospace;
+	background-color: var(--color-bg);
+	color: var(--color-muted);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
