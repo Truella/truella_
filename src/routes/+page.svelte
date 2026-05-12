@@ -1,7 +1,8 @@
 <script lang="ts">
 	import Readme from '$lib/components/sections/Readme.svelte';
+	import PackageJson from '$lib/components/sections/PackageJson.svelte';
 </script>
 
 <Readme />
-<div id="package-json" class="sr-only">package.json</div>
+<PackageJson />
 <div id="changelog" class="sr-only">CHANGELOG.md</div>
