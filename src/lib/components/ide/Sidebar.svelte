@@ -5,6 +5,11 @@
 	function readmeActive(path: string, hash: string) {
 		return path === '/' && hash !== '#package-json' && hash !== '#changelog';
 	}
+
+	let projectsOpen = $state(true);
+	let skillsOpen = $state(true);
+	let experienceOpen = $state(true);
+	let contactOpen = $state(true);
 </script>
 
 <nav
@@ -30,66 +35,108 @@
 
 		<div class="mb-1 pl-1" style="color: var(--color-accent)">portfolio</div>
 		<div class="pl-2">
-			<a
-				href="/projects"
-				class="sidebar-link flex items-start gap-1"
-				class:sidebar-link--active={$page.url.pathname === '/projects' ||
-					$page.url.pathname.startsWith('/projects/')}
+			<button
+				type="button"
+				class="sidebar-folder mb-0.5 flex w-full items-start gap-1 rounded px-0.5 py-0.5 text-left"
+				style="color: var(--color-muted);"
+				onclick={() => (projectsOpen = !projectsOpen)}
 			>
-				<span class="pointer-events-none select-none" style="color: var(--color-muted)">▾</span>
-				<span>projects</span>
-			</a>
-			<div class="pl-4">
-				{#each projects as p (p.slug)}
+				<span class="w-3 shrink-0 select-none" aria-hidden="true">{projectsOpen ? '▾' : '▸'}</span>
+				<span class="min-w-0" style="color: var(--color-muted)">projects/</span>
+			</button>
+			{#if projectsOpen}
+				<div class="mb-2 pl-4">
 					<a
-						href="/projects/{p.slug}"
+						href="/projects"
 						class="sidebar-link flex items-start gap-1"
-						class:sidebar-link--active={$page.url.pathname === `/projects/${p.slug}`}
+						class:sidebar-link--active={$page.url.pathname === '/projects' ||
+							$page.url.pathname.startsWith('/projects/')}
 					>
 						<span class="pointer-events-none select-none" style="color: var(--color-muted)">▸</span>
-						<span>{p.slug}</span>
+						<span>+page.svelte</span>
 					</a>
-				{/each}
-			</div>
-		</div>
+					{#each projects as p (p.slug)}
+						<a
+							href="/projects/{p.slug}"
+							class="sidebar-link flex items-start gap-1"
+							class:sidebar-link--active={$page.url.pathname === `/projects/${p.slug}`}
+						>
+							<span class="pointer-events-none select-none" style="color: var(--color-muted)">▸</span>
+							<span>{p.slug}</span>
+						</a>
+					{/each}
+					<span class="mt-1 block pl-6 opacity-60">roadmap.md</span>
+				</div>
+			{/if}
 
-		<div class="mt-3 pl-2">
-			<div class="flex items-start gap-1">
-				<span class="select-none" style="color: var(--color-muted)">▾</span>
-				<span style="color: var(--color-muted)">skills</span>
-			</div>
-			<div class="pl-4">
-				<a
-					href="/#package-json"
-					class="sidebar-link flex items-start gap-1"
-					class:sidebar-link--active={$page.url.pathname === '/' && $page.url.hash === '#package-json'}
-				>
-					<span class="pointer-events-none select-none" style="color: var(--color-muted)">▸</span>
-					<span>package.json</span>
-				</a>
-			</div>
-		</div>
-
-		<div class="mt-3 pl-2">
-			<a
-				href="/#changelog"
-				class="sidebar-link flex items-start gap-1"
-				class:sidebar-link--active={$page.url.pathname === '/' && $page.url.hash === '#changelog'}
+			<button
+				type="button"
+				class="sidebar-folder mb-0.5 mt-2 flex w-full items-start gap-1 rounded px-0.5 py-0.5 text-left"
+				style="color: var(--color-muted);"
+				onclick={() => (skillsOpen = !skillsOpen)}
 			>
-				<span class="pointer-events-none select-none" style="color: var(--color-muted)">▸</span>
-				<span>CHANGELOG.md</span>
-			</a>
-		</div>
+				<span class="w-3 shrink-0 select-none" aria-hidden="true">{skillsOpen ? '▾' : '▸'}</span>
+				<span class="min-w-0">skills</span>
+			</button>
+			{#if skillsOpen}
+				<div class="mb-2 pl-4">
+					<a
+						href="/#package-json"
+						class="sidebar-link flex items-start gap-1"
+						class:sidebar-link--active={$page.url.pathname === '/' && $page.url.hash === '#package-json'}
+					>
+						<span class="pointer-events-none select-none" style="color: var(--color-muted)">▸</span>
+						<span>package.json</span>
+					</a>
+					<span class="mt-1 block pl-6 opacity-60">tsconfig.json</span>
+				</div>
+			{/if}
 
-		<div class="mt-3 pl-2">
-			<a
-				href="/contact"
-				class="sidebar-link flex items-start gap-1"
-				class:sidebar-link--active={$page.url.pathname === '/contact'}
+			<button
+				type="button"
+				class="sidebar-folder mb-0.5 mt-2 flex w-full items-start gap-1 rounded px-0.5 py-0.5 text-left"
+				style="color: var(--color-muted);"
+				onclick={() => (experienceOpen = !experienceOpen)}
 			>
-				<span class="pointer-events-none select-none" style="color: var(--color-muted)">▸</span>
-				<span>Terminal</span>
-			</a>
+				<span class="w-3 shrink-0 select-none" aria-hidden="true">{experienceOpen ? '▾' : '▸'}</span>
+				<span class="min-w-0">experience</span>
+			</button>
+			{#if experienceOpen}
+				<div class="mb-2 pl-4">
+					<a
+						href="/#changelog"
+						class="sidebar-link flex items-start gap-1"
+						class:sidebar-link--active={$page.url.pathname === '/' && $page.url.hash === '#changelog'}
+					>
+						<span class="pointer-events-none select-none" style="color: var(--color-muted)">▸</span>
+						<span>CHANGELOG.md</span>
+					</a>
+					<span class="mt-1 block pl-6 opacity-60">release-notes.md</span>
+				</div>
+			{/if}
+
+			<button
+				type="button"
+				class="sidebar-folder mb-0.5 mt-2 flex w-full items-start gap-1 rounded px-0.5 py-0.5 text-left"
+				style="color: var(--color-muted);"
+				onclick={() => (contactOpen = !contactOpen)}
+			>
+				<span class="w-3 shrink-0 select-none" aria-hidden="true">{contactOpen ? '▾' : '▸'}</span>
+				<span class="min-w-0">contact</span>
+			</button>
+			{#if contactOpen}
+				<div class="pl-4">
+					<a
+						href="/contact"
+						class="sidebar-link flex items-start gap-1"
+						class:sidebar-link--active={$page.url.pathname === '/contact'}
+					>
+						<span class="pointer-events-none select-none" style="color: var(--color-muted)">▸</span>
+						<span>Terminal</span>
+					</a>
+					<span class="mt-1 block pl-6 opacity-60">.env.example</span>
+				</div>
+			{/if}
 		</div>
 	</div>
 </nav>

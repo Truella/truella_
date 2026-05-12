@@ -114,3 +114,7 @@ button,
 .sidebar-link--active:hover {
 	background-color: color-mix(in srgb, var(--color-accent) 20%, transparent);
 }
+
+.sidebar-folder:hover {
+	background-color: color-mix(in srgb, var(--color-muted) 10%, transparent);
+}

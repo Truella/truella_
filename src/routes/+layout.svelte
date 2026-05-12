@@ -1,11 +1,13 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import { page } from '$app/stores';
+	import { fly } from 'svelte/transition';
 	import '../app.css';
 	import { editorTabLabel } from '$lib/editorTabLabel';
 	import TitleBar from '$lib/components/ide/TitleBar.svelte';
 	import Sidebar from '$lib/components/ide/Sidebar.svelte';
 	import StatusBar from '$lib/components/ide/StatusBar.svelte';
+	import { prefersReducedMotion } from '$lib/stores/motion';
 	import { theme } from '$lib/stores/theme';
 
 	let { children } = $props();
@@ -52,7 +54,15 @@
 				></div>
 			</div>
 			<div class="editor-surface min-h-0 flex-1 overflow-auto p-6">
-				{@render children()}
+				{#key $page.url.pathname}
+					{#if !$prefersReducedMotion}
+						<div in:fly={{ y: 8, duration: 200 }}>
+							{@render children()}
+						</div>
+					{:else}
+						{@render children()}
+					{/if}
+				{/key}
 			</div>
 		</main>
 	</div>
