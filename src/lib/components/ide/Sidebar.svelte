@@ -10,6 +10,13 @@
 	let skillsOpen = $state(true);
 	let experienceOpen = $state(true);
 	let contactOpen = $state(true);
+
+	$effect(() => {
+		const path = $page.url.pathname;
+		if (path === '/projects' || path.startsWith('/projects/')) {
+			projectsOpen = true;
+		}
+	});
 </script>
 
 <nav
@@ -49,8 +56,7 @@
 					<a
 						href="/projects"
 						class="sidebar-link flex items-start gap-1"
-						class:sidebar-link--active={$page.url.pathname === '/projects' ||
-							$page.url.pathname.startsWith('/projects/')}
+						class:sidebar-link--active={$page.url.pathname === '/projects'}
 					>
 						<span class="pointer-events-none select-none" style="color: var(--color-muted)">▸</span>
 						<span>+page.svelte</span>
@@ -65,7 +71,6 @@
 							<span>{p.slug}</span>
 						</a>
 					{/each}
-					<span class="mt-1 block pl-6 opacity-60">roadmap.md</span>
 				</div>
 			{/if}
 
