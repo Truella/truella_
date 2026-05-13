@@ -1,9 +1,20 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { projects } from '$lib/data';
 
 	function openPath(pathname: string): string {
 		if (!pathname || pathname === '/') return '/';
 		return pathname.endsWith('/') && pathname.length > 1 ? pathname.slice(0, -1) : pathname;
+	}
+
+	function statusCenter(pathname: string): string {
+		const path = openPath(pathname);
+		const m = /^\/projects\/([^/]+)$/.exec(path);
+		if (m) {
+			const proj = projects.find((x) => x.slug === m[1]);
+			if (proj) return `projects / ${proj.title}`;
+		}
+		return path;
 	}
 </script>
 
@@ -22,7 +33,7 @@
 		</span>
 	</div>
 	<div class="min-w-0 flex-1 truncate text-center" style="color: var(--color-muted)">
-		{openPath($page.url.pathname)}
+		{statusCenter($page.url.pathname)}
 	</div>
 	<div class="flex shrink-0 items-center gap-3" style="color: var(--color-muted)">
 		<span>Ln 1, Col 1</span>

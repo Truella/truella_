@@ -1,3 +1,5 @@
+import { projects } from '$lib/data';
+
 export function editorTabLabel(pathname: string, hash = ''): string {
 	const p =
 		pathname.length > 1 && pathname.endsWith('/') ? pathname.slice(0, -1) : pathname;
@@ -9,6 +11,9 @@ export function editorTabLabel(pathname: string, hash = ''): string {
 	if (p === '/contact') return 'Terminal';
 	if (p === '/projects') return 'projects';
 	const m = /^\/projects\/([^/]+)$/.exec(p);
-	if (m) return m[1];
+	if (m) {
+		const proj = projects.find((x) => x.slug === m[1]);
+		return proj?.title ?? m[1];
+	}
 	return p;
 }
