@@ -35,7 +35,10 @@
 	<div class="min-w-0 flex-1 truncate text-center" style="color: var(--color-muted)">
 		{statusCenter($page.url.pathname)}
 	</div>
-	<div class="flex shrink-0 items-center gap-3" style="color: var(--color-muted)">
+	<div class="flex shrink-0 flex-wrap items-center justify-end gap-x-3 gap-y-0.5" style="color: var(--color-muted)">
+		<span class="hidden sm:inline font-mono text-[10px] opacity-90" title="Toggle terminal"
+			>{'Ctrl+` Terminal'}</span
+		>
 		<span>Ln 1, Col 1</span>
 		<span class="hidden sm:inline">UTF-8</span>
 		<span>JetBrains Mono</span>

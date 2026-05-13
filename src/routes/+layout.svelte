@@ -7,7 +7,9 @@
 	import TitleBar from '$lib/components/ide/TitleBar.svelte';
 	import Sidebar from '$lib/components/ide/Sidebar.svelte';
 	import StatusBar from '$lib/components/ide/StatusBar.svelte';
+	import Terminal from '$lib/components/sections/Terminal.svelte';
 	import { prefersReducedMotion } from '$lib/stores/motion';
+	import { terminal } from '$lib/stores/terminal';
 	import { theme } from '$lib/stores/theme';
 
 	let { children } = $props();
@@ -19,7 +21,17 @@
 		});
 		return unsub;
 	});
+
+	function onGlobalKeydown(e: KeyboardEvent) {
+		if (!browser || e.repeat) return;
+		if (!e.ctrlKey || e.metaKey || e.altKey) return;
+		if (e.code !== 'Backquote' && e.key !== '`') return;
+		e.preventDefault();
+		terminal.toggle();
+	}
 </script>
+
+<svelte:window onkeydown={onGlobalKeydown} />
 
 <svelte:head>
 	<title>portfolio.dev</title>
@@ -64,6 +76,7 @@
 					{/if}
 				{/key}
 			</div>
+			<Terminal />
 		</main>
 	</div>
 	<StatusBar />
