@@ -2,9 +2,8 @@
 	import { browser } from '$app/environment';
 	import { get } from 'svelte/store';
 	import { tick } from 'svelte';
-	import { slide } from 'svelte/transition';
+	import MaybeSlide from '$lib/components/ui/MaybeSlide.svelte';
 	import { terminal } from '$lib/stores/terminal';
-	import { prefersReducedMotion } from '$lib/stores/motion';
 
 	type Props = {
 		forceOpen?: boolean;
@@ -233,13 +232,9 @@
 </script>
 
 {#if forceOpen || $terminal.isOpen}
-	<div
-		class="terminal-dock"
-		in:slide={$prefersReducedMotion ? { duration: 0, axis: 'y' } : { duration: 250, axis: 'y' }}
-		role="region"
-		aria-label="Integrated terminal"
-	>
-		<div class="terminal-panel">
+	<MaybeSlide class="terminal-dock" role="complementary" aria-label="Contact terminal">
+		{#snippet children()}
+			<div class="terminal-panel">
 			<div class="terminal-header">
 				<span class="terminal-tab">terminal</span>
 				{#if !forceOpen}
@@ -274,11 +269,18 @@
 						<div class="terminal-line terminal-line--out terminal-line--ok">{item.text}</div>
 					{:else if isMailto(item.text)}
 						<div class="terminal-line terminal-line--out">
-							<a class="terminal-link" href={item.text}>{item.text.replace(/^mailto:/, '')}</a>
+							<a class="terminal-link" href={item.text} aria-label={`Send email to ${item.text.replace(/^mailto:/, '')}`}
+								>{item.text.replace(/^mailto:/, '')}</a
+							>
 						</div>
 					{:else if isHttp(item.text)}
 						<div class="terminal-line terminal-line--out">
-							<a class="terminal-link" href={item.text} target="_blank" rel="noopener noreferrer"
+							<a
+								class="terminal-link"
+								href={item.text}
+								target="_blank"
+								rel="noopener noreferrer"
+								aria-label={`Open link ${item.text} in a new tab`}
 								>{item.text}</a
 							>
 						</div>
@@ -301,11 +303,12 @@
 				/>
 			</form>
 		</div>
-	</div>
+		{/snippet}
+	</MaybeSlide>
 {/if}
 
 <style>
-	.terminal-dock {
+	:global(.terminal-dock) {
 		flex-shrink: 0;
 		border-top: 1px solid var(--color-border);
 		background-color: #1e1e1e;
@@ -316,7 +319,7 @@
 		min-height: 0;
 	}
 
-	:global([data-theme='light']) .terminal-dock {
+	:global([data-theme='light'] .terminal-dock) {
 		background-color: #f3f3f3;
 		color: #1a1a1a;
 	}
@@ -457,13 +460,8 @@
 		color: #f5f5f5;
 		background: transparent;
 		border: none;
-		outline: none;
 		box-shadow: none;
 		padding: 0;
-	}
-
-	.terminal-field:focus {
-		outline: none;
 	}
 
 	:global([data-theme='light']) .terminal-field {

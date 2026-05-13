@@ -1,8 +1,7 @@
 <script lang="ts">
 	import type { Experience } from '$lib/types';
-	import { fly } from 'svelte/transition';
 	import { inview } from '$lib/actions/inview';
-	import { prefersReducedMotion } from '$lib/stores/motion';
+	import MaybeFly from '$lib/components/ui/MaybeFly.svelte';
 
 	let { exp, index, last = false }: { exp: Experience; index: number; last?: boolean } = $props();
 
@@ -14,33 +13,28 @@
 	use:inview={{ threshold: 0.2, onInview: () => (shown = true) }}
 >
 	{#if shown}
-		<div
-			class="chg-block"
-			in:fly={{
-				y: $prefersReducedMotion ? 0 : 16,
-				duration: $prefersReducedMotion ? 0 : 200,
-				delay: $prefersReducedMotion ? 0 : index * 100
-			}}
-		>
-			<div class="chg-row-title">
-				<h2 class="chg-h2">
-					<span class="chg-hash">##</span>
-					<span class="chg-version">{exp.version}</span>
-					<span class="chg-dash"> — </span>
-					<span class="chg-company">{exp.company}</span>
-				</h2>
-				<span class="chg-period">{exp.period}</span>
-			</div>
-			<h3 class="chg-h3">### {exp.role}</h3>
-			<ul class="chg-ul">
-				{#each exp.highlights as line (line)}
-					<li class="chg-li"><span class="chg-md-dash">- </span>{line}</li>
-				{/each}
-			</ul>
-			{#if !last}
-				<hr class="chg-rule" />
-			{/if}
-		</div>
+		<MaybeFly class="chg-block" y={16} duration={200} delay={index * 100}>
+			{#snippet children()}
+				<div class="chg-row-title">
+					<h2 class="chg-h2">
+						<span class="chg-hash">##</span>
+						<span class="chg-version">{exp.version}</span>
+						<span class="chg-dash"> — </span>
+						<span class="chg-company">{exp.company}</span>
+					</h2>
+					<span class="chg-period">{exp.period}</span>
+				</div>
+				<h3 class="chg-h3">### {exp.role}</h3>
+				<ul class="chg-ul">
+					{#each exp.highlights as line (line)}
+						<li class="chg-li"><span class="chg-md-dash">- </span>{line}</li>
+					{/each}
+				</ul>
+				{#if !last}
+					<hr class="chg-rule" />
+				{/if}
+			{/snippet}
+		</MaybeFly>
 	{/if}
 </div>
 
@@ -49,7 +43,7 @@
 		min-height: 2rem;
 	}
 
-	.chg-block {
+	:global(.chg-block) {
 		padding-bottom: 0.25rem;
 	}
 

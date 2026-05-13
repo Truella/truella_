@@ -15,6 +15,17 @@
 	<a href="/projects/{project.slug}" class="project-card-link">
 		<h2 class="project-card-title">{project.title}</h2>
 		<p class="project-card-desc">{excerpt}</p>
+		<div class="project-card-thumb-wrap">
+			<img
+				class="project-card-thumb"
+				src={project.screenshot}
+				alt={`${project.title} project screenshot`}
+				width="1200"
+				height="675"
+				loading="lazy"
+				decoding="async"
+			/>
+		</div>
 		<div class="project-card-stack">
 			{#each project.stack as tech (tech)}
 				<TechBadge label={tech} />
@@ -28,7 +39,7 @@
 				href={project.liveUrl}
 				target="_blank"
 				rel="noopener noreferrer"
-				aria-label={`Open live demo for ${project.title}`}
+				aria-label={`View ${project.title} live site in a new tab`}
 			>
 				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
 					<path
@@ -100,6 +111,22 @@
 		font-size: 0.8125rem;
 		line-height: 1.5;
 		color: color-mix(in srgb, var(--color-muted) 88%, var(--color-bg));
+	}
+
+	.project-card-thumb-wrap {
+		margin: 0 0 0.75rem;
+		border-radius: 4px;
+		overflow: hidden;
+		border: 1px solid var(--color-border);
+		background-color: color-mix(in srgb, var(--color-chrome) 40%, var(--color-editor-bg));
+		aspect-ratio: 16 / 9;
+	}
+
+	.project-card-thumb {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
 	}
 
 	.project-card-stack {

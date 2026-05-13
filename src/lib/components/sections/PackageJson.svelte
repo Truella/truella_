@@ -1,22 +1,13 @@
 <script lang="ts">
-	import { fade } from 'svelte/transition';
 	import { inview } from '$lib/actions/inview';
 	import { skills } from '$lib/data';
-	import { prefersReducedMotion } from '$lib/stores/motion';
+	import MaybeFade from '$lib/components/ui/MaybeFade.svelte';
 
 	let revealed = $state(false);
 
 	const depEntries = Object.entries(skills.dependencies);
 	const devEntries = Object.entries(skills.devDependencies);
 	const scriptEntries = Object.entries(skills.scripts);
-
-	function fadeDelay(i: number) {
-		return $prefersReducedMotion ? 0 : i * 60;
-	}
-
-	function fadeDuration() {
-		return $prefersReducedMotion ? 0 : 150;
-	}
 </script>
 
 <div
@@ -51,15 +42,14 @@
 					<span class="pkg-key">"dependencies"</span><span class="pkg-punct">: {`{`}</span>
 				</div>
 				{#each depEntries as [key, value], i (key)}
-					<div
-						class="pkg-line"
-						in:fade={{ delay: fadeDelay(i), duration: fadeDuration() }}
-					>
-						<span class="pkg-indent2"></span>
-						<span class="pkg-key">{JSON.stringify(key)}</span><span class="pkg-punct">: </span><span
-							class="pkg-str">{JSON.stringify(value)}</span
-						><span class="pkg-punct">{i < depEntries.length - 1 ? ',' : ''}</span>
-					</div>
+					<MaybeFade delay={i * 60} class="pkg-line">
+						{#snippet children()}
+							<span class="pkg-indent2"></span>
+							<span class="pkg-key">{JSON.stringify(key)}</span><span class="pkg-punct">: </span><span
+								class="pkg-str">{JSON.stringify(value)}</span
+							><span class="pkg-punct">{i < depEntries.length - 1 ? ',' : ''}</span>
+						{/snippet}
+					</MaybeFade>
 				{/each}
 				<div class="pkg-line">
 					<span class="pkg-indent"></span>
@@ -71,15 +61,14 @@
 					<span class="pkg-key">"devDependencies"</span><span class="pkg-punct">: {`{`}</span>
 				</div>
 				{#each devEntries as [key, value], i (key)}
-					<div
-						class="pkg-line"
-						in:fade={{ delay: fadeDelay(depEntries.length + i), duration: fadeDuration() }}
-					>
-						<span class="pkg-indent2"></span>
-						<span class="pkg-key">{JSON.stringify(key)}</span><span class="pkg-punct">: </span><span
-							class="pkg-str">{JSON.stringify(value)}</span
-						><span class="pkg-punct">{i < devEntries.length - 1 ? ',' : ''}</span>
-					</div>
+					<MaybeFade delay={depEntries.length * 60 + i * 60} class="pkg-line">
+						{#snippet children()}
+							<span class="pkg-indent2"></span>
+							<span class="pkg-key">{JSON.stringify(key)}</span><span class="pkg-punct">: </span><span
+								class="pkg-str">{JSON.stringify(value)}</span
+							><span class="pkg-punct">{i < devEntries.length - 1 ? ',' : ''}</span>
+						{/snippet}
+					</MaybeFade>
 				{/each}
 				<div class="pkg-line">
 					<span class="pkg-indent"></span>
@@ -91,18 +80,17 @@
 					<span class="pkg-key">"scripts"</span><span class="pkg-punct">: {`{`}</span>
 				</div>
 				{#each scriptEntries as [key, value], i (key)}
-					<div
+					<MaybeFade
+						delay={depEntries.length * 60 + devEntries.length * 60 + i * 60}
 						class="pkg-line"
-						in:fade={{
-							delay: fadeDelay(depEntries.length + devEntries.length + i),
-							duration: fadeDuration()
-						}}
 					>
-						<span class="pkg-indent2"></span>
-						<span class="pkg-key">{JSON.stringify(key)}</span><span class="pkg-punct">: </span><span
-							class="pkg-str">{JSON.stringify(value)}</span
-						><span class="pkg-punct">{i < scriptEntries.length - 1 ? ',' : ''}</span>
-					</div>
+						{#snippet children()}
+							<span class="pkg-indent2"></span>
+							<span class="pkg-key">{JSON.stringify(key)}</span><span class="pkg-punct">: </span><span
+								class="pkg-str">{JSON.stringify(value)}</span
+							><span class="pkg-punct">{i < scriptEntries.length - 1 ? ',' : ''}</span>
+						{/snippet}
+					</MaybeFade>
 				{/each}
 				<div class="pkg-line">
 					<span class="pkg-indent"></span>
@@ -157,7 +145,7 @@
 		word-break: break-word;
 	}
 
-	.pkg-line {
+	:global(.pkg-line) {
 		display: block;
 	}
 

@@ -36,6 +36,7 @@
 			href="/"
 			class="sidebar-link mb-3 block pl-3"
 			class:sidebar-link--active={readmeActive($page.url.pathname, $page.url.hash)}
+			aria-current={readmeActive($page.url.pathname, $page.url.hash) ? 'page' : undefined}
 		>
 			README.md
 		</a>
@@ -46,17 +47,20 @@
 				type="button"
 				class="sidebar-folder mb-0.5 flex w-full items-start gap-1 rounded px-0.5 py-0.5 text-left"
 				style="color: var(--color-muted);"
+				aria-expanded={projectsOpen}
+				aria-controls="sidebar-folder-projects"
 				onclick={() => (projectsOpen = !projectsOpen)}
 			>
 				<span class="w-3 shrink-0 select-none" aria-hidden="true">{projectsOpen ? '▾' : '▸'}</span>
 				<span class="min-w-0" style="color: var(--color-muted)">projects/</span>
 			</button>
 			{#if projectsOpen}
-				<div class="mb-2 pl-4">
+				<div id="sidebar-folder-projects" class="mb-2 pl-4">
 					<a
 						href="/projects"
 						class="sidebar-link flex items-start gap-1"
 						class:sidebar-link--active={$page.url.pathname === '/projects'}
+						aria-current={$page.url.pathname === '/projects' ? 'page' : undefined}
 					>
 						<span class="pointer-events-none select-none" style="color: var(--color-muted)">▸</span>
 						<span>+page.svelte</span>
@@ -66,6 +70,7 @@
 							href="/projects/{p.slug}"
 							class="sidebar-link flex items-start gap-1"
 							class:sidebar-link--active={$page.url.pathname === `/projects/${p.slug}`}
+							aria-current={$page.url.pathname === `/projects/${p.slug}` ? 'page' : undefined}
 						>
 							<span class="pointer-events-none select-none" style="color: var(--color-muted)">▸</span>
 							<span>{p.slug}</span>
@@ -78,17 +83,22 @@
 				type="button"
 				class="sidebar-folder mb-0.5 mt-2 flex w-full items-start gap-1 rounded px-0.5 py-0.5 text-left"
 				style="color: var(--color-muted);"
+				aria-expanded={skillsOpen}
+				aria-controls="sidebar-folder-skills"
 				onclick={() => (skillsOpen = !skillsOpen)}
 			>
 				<span class="w-3 shrink-0 select-none" aria-hidden="true">{skillsOpen ? '▾' : '▸'}</span>
 				<span class="min-w-0">skills</span>
 			</button>
 			{#if skillsOpen}
-				<div class="mb-2 pl-4">
+				<div id="sidebar-folder-skills" class="mb-2 pl-4">
 					<a
 						href="/#package-json"
 						class="sidebar-link flex items-start gap-1"
 						class:sidebar-link--active={$page.url.pathname === '/' && $page.url.hash === '#package-json'}
+						aria-current={$page.url.pathname === '/' && $page.url.hash === '#package-json'
+							? 'page'
+							: undefined}
 					>
 						<span class="pointer-events-none select-none" style="color: var(--color-muted)">▸</span>
 						<span>package.json</span>
@@ -101,17 +111,22 @@
 				type="button"
 				class="sidebar-folder mb-0.5 mt-2 flex w-full items-start gap-1 rounded px-0.5 py-0.5 text-left"
 				style="color: var(--color-muted);"
+				aria-expanded={experienceOpen}
+				aria-controls="sidebar-folder-experience"
 				onclick={() => (experienceOpen = !experienceOpen)}
 			>
 				<span class="w-3 shrink-0 select-none" aria-hidden="true">{experienceOpen ? '▾' : '▸'}</span>
 				<span class="min-w-0">experience</span>
 			</button>
 			{#if experienceOpen}
-				<div class="mb-2 pl-4">
+				<div id="sidebar-folder-experience" class="mb-2 pl-4">
 					<a
 						href="/#changelog"
 						class="sidebar-link flex items-start gap-1"
 						class:sidebar-link--active={$page.url.pathname === '/' && $page.url.hash === '#changelog'}
+						aria-current={$page.url.pathname === '/' && $page.url.hash === '#changelog'
+							? 'page'
+							: undefined}
 					>
 						<span class="pointer-events-none select-none" style="color: var(--color-muted)">▸</span>
 						<span>CHANGELOG.md</span>
@@ -124,17 +139,20 @@
 				type="button"
 				class="sidebar-folder mb-0.5 mt-2 flex w-full items-start gap-1 rounded px-0.5 py-0.5 text-left"
 				style="color: var(--color-muted);"
+				aria-expanded={contactOpen}
+				aria-controls="sidebar-folder-contact"
 				onclick={() => (contactOpen = !contactOpen)}
 			>
 				<span class="w-3 shrink-0 select-none" aria-hidden="true">{contactOpen ? '▾' : '▸'}</span>
 				<span class="min-w-0">contact</span>
 			</button>
 			{#if contactOpen}
-				<div class="pl-4">
+				<div id="sidebar-folder-contact" class="pl-4">
 					<a
 						href="/contact"
 						class="sidebar-link flex items-start gap-1"
 						class:sidebar-link--active={$page.url.pathname === '/contact'}
+						aria-current={$page.url.pathname === '/contact' ? 'page' : undefined}
 					>
 						<span class="pointer-events-none select-none" style="color: var(--color-muted)">▸</span>
 						<span>Terminal</span>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fade } from 'svelte/transition';
+	import MaybeFade from '$lib/components/ui/MaybeFade.svelte';
 	import Typewriter from '$lib/components/ui/Typewriter.svelte';
 
 	let secondaryVisible = $state(false);
@@ -7,7 +7,9 @@
 
 <div class="readme-root">
 	<div class="readme-toolbar">
-		<button type="button" class="readme-toolbar-btn">Download CV</button>
+		<button type="button" class="readme-toolbar-btn" aria-label="Download CV (placeholder)">
+			Download CV
+		</button>
 	</div>
 	<div class="readme-body">
 		<h1 class="readme-h1">
@@ -16,21 +18,23 @@
 		</h1>
 
 		{#if secondaryVisible}
-			<div class="readme-secondary" in:fade={{ duration: 300 }}>
-				<blockquote class="readme-bq">
-					<p>Frontend Engineer · Lagos</p>
-				</blockquote>
+			<MaybeFade duration={300} class="readme-secondary">
+				{#snippet children()}
+					<blockquote class="readme-bq">
+						<p>Frontend Engineer · Lagos</p>
+					</blockquote>
 
-				<pre class="readme-fence"><code class="readme-code"><span class="readme-code-inner">/*
+					<pre class="readme-fence"><code class="readme-code"><span class="readme-code-inner">/*
  * I ship responsive interfaces with strong TypeScript boundaries
  * and care about perceived performance, accessibility, and maintainability.
  */</span></code></pre>
 
-				<p class="readme-links">
-					<a class="readme-badge" href="https://github.com/alexrivera">GitHub</a>
-					<a class="readme-badge" href="https://www.linkedin.com/in/alexrivera-dev">LinkedIn</a>
-				</p>
-			</div>
+					<p class="readme-links">
+						<a class="readme-badge" href="https://github.com/alexrivera">GitHub</a>
+						<a class="readme-badge" href="https://www.linkedin.com/in/alexrivera-dev">LinkedIn</a>
+					</p>
+				{/snippet}
+			</MaybeFade>
 		{/if}
 	</div>
 </div>

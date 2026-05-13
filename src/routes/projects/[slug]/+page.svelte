@@ -55,7 +55,7 @@
 		<img
 			class="proj-shot"
 			src={project.screenshot}
-			alt={`Screenshot for ${project.title}`}
+			alt={`${project.title} project screenshot`}
 			width="1200"
 			height="675"
 			loading="lazy"

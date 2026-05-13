@@ -22,6 +22,7 @@
 }
 
 :root {
+	--accent: var(--color-accent);
 	--color-bg: #0d0d0d;
 	--color-accent: #4ade80;
 	--color-muted: #a0a0a0;
@@ -70,6 +71,37 @@ body {
 		color 300ms ease;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+}
+
+.skip-link {
+	position: absolute;
+	left: -9999px;
+	top: 0.75rem;
+	z-index: 100;
+	padding: 0.5rem 0.75rem;
+	border-radius: 4px;
+	background-color: var(--color-chrome);
+	color: var(--color-muted);
+	border: 1px solid var(--color-border);
+	text-decoration: none;
+	font-size: 0.75rem;
+}
+
+.skip-link:focus-visible {
+	left: 0.75rem;
+}
+
+#main-content {
+	scroll-margin-top: 0.5rem;
+}
+
+:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 3px;
+}
+
+*:focus:not(:focus-visible) {
+	outline: none;
 }
 
 .ide-root,
@@ -268,4 +300,70 @@ button,
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+}
+
+
+
+
+/* ── Max width container for large screens ── */
+.ide-frame {
+	display: flex;
+	justify-content: center;
+	background-color: var(--color-bg);
+	min-height: 100dvh;
+}
+
+.ide-frame > .ide-root {
+	width: 100%;
+	max-width: 1400px;
+	box-shadow: 0 0 0 1px var(--color-border);
+}
+
+/* ── Mobile: min tap target size ── */
+@media (max-width: 767px) {
+	a,
+	button,
+	[role='button'] {
+		min-height: 44px;
+		display: inline-flex;
+		align-items: center;
+	}
+
+	/* Override for sidebar links which are inline-block */
+	.sidebar-link {
+		min-height: 36px;
+	}
+}
+
+
+
+/* ── Sidebar full height + scroll ── */
+.sidebar {
+	height: 100%;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+/* ── Custom scrollbars ── */
+* {
+	scrollbar-width: thin;
+	scrollbar-color: var(--color-border) transparent;
+}
+
+*::-webkit-scrollbar {
+	width: 4px;
+	height: 4px;
+}
+
+*::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+	background-color: var(--color-border);
+	border-radius: 99px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+	background-color: var(--color-muted);
 }
