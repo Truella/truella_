@@ -53,7 +53,7 @@
 
 <div class="ide-frame">
 	<div
-		class="ide-root flex h-[100dvh] max-h-[100dvh] w-full flex-col overflow-hidden"
+		class="ide-root flex h-[100dvh] max-h-[1400px] w-full flex-col overflow-hidden"
 		style="background-color: var(--color-bg); color: var(--color-muted);"
 	>
 		<TitleBar />
