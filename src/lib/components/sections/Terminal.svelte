@@ -20,8 +20,8 @@
 
 	const OWNER_NAME = 'Truella';
 	const OWNER_ROLE = 'Frontend Engineer';
-	const CONTACT_EMAIL = 'turahsuleiman1212@gmail.com';
-	const LINKEDIN_URL = 'https://www.linkedin.com/in/yourname';
+	const CONTACT_EMAIL = 'smistura706@gmail.com';
+	const LINKEDIN_URL = 'https://linkedin.com/in/suleimanolayemimistura';
 
 	const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xojrzevj';
 
