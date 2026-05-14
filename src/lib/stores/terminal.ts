@@ -1,6 +1,6 @@
-import { writable } from 'svelte/store';
+import { get, writable } from 'svelte/store';
 
-export type HistoryLine = { id: string; type: 'input' | 'output'; text: string };
+export type HistoryLine = { id: string; type: 'input' | 'output'; text: string; muted?: boolean };
 
 export type HireStep = 'idle' | 'name' | 'email' | 'message';
 
@@ -28,8 +28,61 @@ function createTerminalStore() {
 
 	const { subscribe, set, update } = writable<TerminalState>(initialState());
 
+	const TYPE_MS = 18;
+
+	let welcomeSeq = 0;
+
+	function typeMutedOutput(fullText: string, onDone: () => void, guard: number) {
+		const id = nextId();
+		update((s) => ({
+			...s,
+			history: [...s.history, { id, type: 'output', text: '', muted: true }]
+		}));
+		let i = 0;
+		const timer = setInterval(() => {
+			if (guard !== welcomeSeq) {
+				clearInterval(timer);
+				return;
+			}
+			i += 1;
+			const text = fullText.slice(0, i);
+			update((s) => ({
+				...s,
+				history: s.history.map((h) => (h.id === id ? { ...h, text } : h))
+			}));
+			if (i >= fullText.length) {
+				clearInterval(timer);
+				onDone();
+			}
+		}, TYPE_MS);
+	}
+
+	function queueWelcome(guard: number) {
+		typeMutedOutput(
+			'Welcome to portfolio.dev',
+			() => {
+				if (guard !== welcomeSeq) return;
+				setTimeout(() => {
+					if (guard !== welcomeSeq) return;
+					typeMutedOutput("Type 'help' to see available commands.", () => {}, guard);
+				}, 300);
+			},
+			guard
+		);
+	}
+
 	return {
 		subscribe,
+		init() {
+			if (get({ subscribe }).history.length > 0) return;
+			welcomeSeq += 1;
+			queueWelcome(welcomeSeq);
+		},
+		replayWelcome() {
+			welcomeSeq += 1;
+			update((s) => ({ ...s, history: [] }));
+			queueWelcome(welcomeSeq);
+		},
 		toggle() {
 			update((s) => ({ ...s, isOpen: !s.isOpen }));
 		},

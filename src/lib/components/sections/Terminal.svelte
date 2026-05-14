@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import { get } from 'svelte/store';
-	import { tick } from 'svelte';
+	import { onMount, tick } from 'svelte';
 	import MaybeSlide from '$lib/components/ui/MaybeSlide.svelte';
+	import { profile } from '$lib/data';
 	import { terminal } from '$lib/stores/terminal';
 
 	type Props = {
@@ -17,12 +18,19 @@
 
 	const PROMPT = 'visitor@portfolio:~$';
 
-	const OWNER_NAME = 'Your Name';
+	const OWNER_NAME = 'Truella';
 	const OWNER_ROLE = 'Frontend Engineer';
-	const CONTACT_EMAIL = 'hello@yourname.dev';
+	const CONTACT_EMAIL = 'turahsuleiman1212@gmail.com';
 	const LINKEDIN_URL = 'https://www.linkedin.com/in/yourname';
 
-	const FORMSPREE_ENDPOINT = 'https://formspree.io/f/your-form-id';
+	const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xojrzevj';
+
+	onMount(() => {
+		if (!browser) return;
+		if (get(terminal).history.length === 0) {
+			terminal.init();
+		}
+	});
 
 	$effect(() => {
 		const unsub = terminal.subscribe(() => {
@@ -62,15 +70,15 @@
 
 		const lower = cmd.toLowerCase();
 		if (lower === 'clear') {
-			terminal.clearScreen();
 			terminal.resetHire();
+			terminal.replayWelcome();
 			line = '';
 			return;
 		}
 
 		if (lower === 'help') {
 			terminal.pushOutput(
-				'Commands: help, whoami, email, linkedin, hire, clear — type a command and press Enter.'
+				'Commands: help, whoami, email, linkedin, cv, message (or contact / contactme), clear — type a command and press Enter.'
 			);
 			line = '';
 			return;
@@ -94,11 +102,29 @@
 			return;
 		}
 
-		if (lower === 'hire') {
+		if (lower === 'cv' || lower === 'resume') {
+			const fileName = profile.cv.split('/').pop() ?? 'resume.pdf';
+			terminal.pushOutput(`__CV__${profile.cv}`);
+			if (browser) {
+				queueMicrotask(() => {
+					const a = document.createElement('a');
+					a.href = profile.cv;
+					a.download = fileName;
+					a.rel = 'noopener';
+					document.body.appendChild(a);
+					a.click();
+					a.remove();
+				});
+			}
+			line = '';
+			return;
+		}
+
+		if (lower === 'message' || lower === 'contact' || lower === 'contactme' || lower === 'hire') {
 			terminal.pushOutput(
 				'I build fast, accessible interfaces and ship with strong TypeScript and modern tooling.'
 			);
-			terminal.pushOutput('Tell me how to reach you — follow the prompts below.');
+			terminal.pushOutput('Send me a message — follow the prompts below.');
 			terminal.setHireStep('name');
 			terminal.pushOutput('Enter your name:');
 			line = '';
@@ -173,7 +199,7 @@
 	function onKeydown(e: KeyboardEvent) {
 		if (get(terminal).hireStep !== 'idle') {
 			if (e.key === 'Escape') {
-				terminal.pushOutput('(hire flow cancelled)');
+				terminal.pushOutput('(message flow cancelled)');
 				terminal.resetHire();
 				line = '';
 				e.preventDefault();
@@ -220,6 +246,14 @@
 
 	function isHttp(text: string) {
 		return text.startsWith('http://') || text.startsWith('https://');
+	}
+
+	function isCvDownload(text: string) {
+		return text.startsWith('__CV__');
+	}
+
+	function cvPathFromOutput(text: string) {
+		return text.slice('__CV__'.length);
 	}
 
 	function isErr(text: string) {
@@ -284,6 +318,19 @@
 								>{item.text}</a
 							>
 						</div>
+					{:else if isCvDownload(item.text)}
+						<div class="terminal-line terminal-line--out">
+							<a
+								class="terminal-link"
+								href={cvPathFromOutput(item.text)}
+								download={cvPathFromOutput(item.text).split('/').pop() ?? 'resume.pdf'}
+								aria-label="Download CV as PDF"
+								>Download CV (PDF)</a
+							>
+							<span class="terminal-cv-hint"> — tap the link if the download did not start.</span>
+						</div>
+					{:else if item.muted}
+						<div class="terminal-line terminal-line--out terminal-line--muted">{item.text}</div>
 					{:else}
 						<div class="terminal-line terminal-line--out">{item.text}</div>
 					{/if}
@@ -399,6 +446,15 @@
 		color: #d4d4d4;
 	}
 
+	.terminal-line--muted {
+		color: #a0a0a0;
+		opacity: 0.9;
+	}
+
+	:global([data-theme='light']) .terminal-line--muted {
+		color: #6b6b6b;
+	}
+
 	:global([data-theme='light']) .terminal-line--out {
 		color: #333;
 	}
@@ -436,6 +492,15 @@
 
 	:global([data-theme='light']) .terminal-link {
 		color: #166534;
+	}
+
+	.terminal-cv-hint {
+		color: #888;
+		font-size: 0.6875rem;
+	}
+
+	:global([data-theme='light']) .terminal-cv-hint {
+		color: #666;
 	}
 
 	.terminal-input-row {

@@ -1,21 +1,104 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import { page } from '$app/stores';
+	import { tick } from 'svelte';
 	import { projects } from '$lib/data';
+	import { activeSection } from '$lib/stores/activeSection';
 
-	function readmeActive(path: string, hash: string) {
-		return path === '/' && hash !== '#package-json' && hash !== '#changelog';
+	const SECTION_IDS = ['readme-section', 'package-section', 'changelog-section'] as const;
+
+	function isPackageHash(hash: string) {
+		return hash === '#package-section' || hash === '#package-json';
+	}
+
+	function isChangelogHash(hash: string) {
+		return hash === '#changelog-section' || hash === '#changelog';
+	}
+
+	function readmeSidebarActive(path: string, hash: string, section: string) {
+		if (path !== '/') return false;
+		if (section === 'readme-section') return true;
+		if (section === 'package-section' || section === 'changelog-section') return false;
+		return !isPackageHash(hash) && !isChangelogHash(hash);
+	}
+
+	function packageJsonSidebarActive(path: string, hash: string, section: string) {
+		if (path !== '/') return false;
+		if (section === 'package-section') return true;
+		if (section === '') return isPackageHash(hash);
+		return false;
+	}
+
+	function changelogSidebarActive(path: string, hash: string, section: string) {
+		if (path !== '/') return false;
+		if (section === 'changelog-section') return true;
+		if (section === '') return isChangelogHash(hash);
+		return false;
 	}
 
 	let projectsOpen = $state(true);
 	let skillsOpen = $state(true);
 	let experienceOpen = $state(true);
 	let contactOpen = $state(true);
+	let funOpen = $state(true);
 
 	$effect(() => {
 		const path = $page.url.pathname;
 		if (path === '/projects' || path.startsWith('/projects/')) {
 			projectsOpen = true;
 		}
+	});
+
+	$effect(() => {
+		if (!browser) return;
+		const path = $page.url.pathname;
+
+		if (path !== '/') {
+			activeSection.set('');
+			return;
+		}
+
+		const ratios = new Map<string, number>(SECTION_IDS.map((id) => [id, 0]));
+		let obs: IntersectionObserver | null = null;
+		let cancelled = false;
+
+		void tick().then(() => {
+			if (cancelled) return;
+
+			obs = new IntersectionObserver(
+				(entries) => {
+					for (const e of entries) {
+						const id = (e.target as HTMLElement).id;
+						if (SECTION_IDS.includes(id as (typeof SECTION_IDS)[number])) {
+							ratios.set(id, e.intersectionRatio);
+						}
+					}
+					let best: (typeof SECTION_IDS)[number] = 'readme-section';
+					let bestR = -1;
+					for (const id of SECTION_IDS) {
+						const r = ratios.get(id) ?? 0;
+						if (r > bestR) {
+							bestR = r;
+							best = id;
+						}
+					}
+					if (bestR > 0) {
+						activeSection.set(best);
+					}
+				},
+				{ threshold: [0, 0.3, 0.5, 0.75, 1] }
+			);
+
+			for (const id of SECTION_IDS) {
+				const el = document.getElementById(id);
+				if (el) obs.observe(el);
+			}
+		});
+
+		return () => {
+			cancelled = true;
+			obs?.disconnect();
+		};
 	});
 </script>
 
@@ -34,9 +117,15 @@
 		<div class="mb-2 pl-1" style="color: var(--color-accent)">OPEN EDITORS</div>
 		<a
 			href="/"
-			class="sidebar-link mb-3 block pl-3"
-			class:sidebar-link--active={readmeActive($page.url.pathname, $page.url.hash)}
-			aria-current={readmeActive($page.url.pathname, $page.url.hash) ? 'page' : undefined}
+			class="sidebar-link mb-4 block pl-3"
+			class:sidebar-link--active={readmeSidebarActive(
+				$page.url.pathname,
+				$page.url.hash,
+				$activeSection
+			)}
+			aria-current={readmeSidebarActive($page.url.pathname, $page.url.hash, $activeSection)
+				? 'page'
+				: undefined}
 		>
 			README.md
 		</a>
@@ -55,7 +144,7 @@
 				<span class="min-w-0" style="color: var(--color-muted)">projects/</span>
 			</button>
 			{#if projectsOpen}
-				<div id="sidebar-folder-projects" class="mb-2 pl-4">
+				<div id="sidebar-folder-projects" class="mb-2 flex flex-col gap-1.5 pl-4">
 					<a
 						href="/projects"
 						class="sidebar-link flex items-start gap-1"
@@ -91,12 +180,20 @@
 				<span class="min-w-0">skills</span>
 			</button>
 			{#if skillsOpen}
-				<div id="sidebar-folder-skills" class="mb-2 pl-4">
+				<div id="sidebar-folder-skills" class="mb-2 flex flex-col gap-1.5 pl-4">
 					<a
-						href="/#package-json"
+						href="/#package-section"
 						class="sidebar-link flex items-start gap-1"
-						class:sidebar-link--active={$page.url.pathname === '/' && $page.url.hash === '#package-json'}
-						aria-current={$page.url.pathname === '/' && $page.url.hash === '#package-json'
+						class:sidebar-link--active={packageJsonSidebarActive(
+							$page.url.pathname,
+							$page.url.hash,
+							$activeSection
+						)}
+						aria-current={packageJsonSidebarActive(
+							$page.url.pathname,
+							$page.url.hash,
+							$activeSection
+						)
 							? 'page'
 							: undefined}
 					>
@@ -119,12 +216,20 @@
 				<span class="min-w-0">experience</span>
 			</button>
 			{#if experienceOpen}
-				<div id="sidebar-folder-experience" class="mb-2 pl-4">
+				<div id="sidebar-folder-experience" class="mb-2 flex flex-col gap-1.5 pl-4">
 					<a
-						href="/#changelog"
+						href="/#changelog-section"
 						class="sidebar-link flex items-start gap-1"
-						class:sidebar-link--active={$page.url.pathname === '/' && $page.url.hash === '#changelog'}
-						aria-current={$page.url.pathname === '/' && $page.url.hash === '#changelog'
+						class:sidebar-link--active={changelogSidebarActive(
+							$page.url.pathname,
+							$page.url.hash,
+							$activeSection
+						)}
+						aria-current={changelogSidebarActive(
+							$page.url.pathname,
+							$page.url.hash,
+							$activeSection
+						)
 							? 'page'
 							: undefined}
 					>
@@ -147,7 +252,7 @@
 				<span class="min-w-0">contact</span>
 			</button>
 			{#if contactOpen}
-				<div id="sidebar-folder-contact" class="pl-4">
+				<div id="sidebar-folder-contact" class="flex flex-col gap-1.5 pl-4">
 					<a
 						href="/contact"
 						class="sidebar-link flex items-start gap-1"
@@ -160,6 +265,36 @@
 					<span class="mt-1 block pl-6 opacity-60">.env.example</span>
 				</div>
 			{/if}
+
+			<button
+				type="button"
+				class="sidebar-folder sidebar-folder--fun mb-0.5 mt-2 flex w-full items-start gap-1 rounded px-0.5 py-0.5 text-left"
+				aria-expanded={funOpen}
+				aria-controls="sidebar-folder-fun"
+				onclick={() => (funOpen = !funOpen)}
+			>
+				<span class="w-3 shrink-0 select-none" aria-hidden="true">{funOpen ? '▾' : '▸'}</span>
+				<span class="min-w-0 sidebar-folder-fun-label">fun/</span>
+			</button>
+			{#if funOpen}
+				<div id="sidebar-folder-fun" class="flex flex-col gap-1.5 pl-4">
+					<a
+						href="/play"
+						class="sidebar-link flex items-start gap-1"
+						class:sidebar-link--active={$page.url.pathname === '/play'}
+						aria-current={$page.url.pathname === '/play' ? 'page' : undefined}
+					>
+						<span class="pointer-events-none select-none" aria-hidden="true">🐛</span>
+						<span>debug.ts</span>
+					</a>
+				</div>
+			{/if}
 		</div>
 	</div>
 </nav>
+
+<style>
+	.sidebar-folder-fun-label {
+		color: #f59e0b;
+	}
+</style>

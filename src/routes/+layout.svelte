@@ -8,6 +8,7 @@
 	import StatusBar from '$lib/components/ide/StatusBar.svelte';
 	import Terminal from '$lib/components/sections/Terminal.svelte';
 	import MaybeFly from '$lib/components/ui/MaybeFly.svelte';
+	import CursorFollower from '$lib/components/ui/CursorFollower.svelte';
 	import { terminal } from '$lib/stores/terminal';
 	import { theme } from '$lib/stores/theme';
 	import { sidebar } from '$lib/stores/sidebar';
@@ -48,6 +49,7 @@
 </svelte:head>
 
 <a href="#main-content" class="skip-link">Skip to content</a>
+<CursorFollower />
 
 <div class="ide-frame">
 	<div
@@ -111,7 +113,7 @@
 						</MaybeFly>
 					{/key}
 				</div>
-				<Terminal />
+				<Terminal forceOpen={$page.url.pathname === '/contact'} />
 			</main>
 		</div>
 		<StatusBar />

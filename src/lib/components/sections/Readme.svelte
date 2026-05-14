@@ -1,37 +1,40 @@
 <script lang="ts">
 	import MaybeFade from '$lib/components/ui/MaybeFade.svelte';
 	import Typewriter from '$lib/components/ui/Typewriter.svelte';
+	import { profile } from '$lib/data';
 
 	let secondaryVisible = $state(false);
 </script>
 
-<div class="readme-root">
+<div id="readme-section" class="readme-root">
 	<div class="readme-toolbar">
-		<button type="button" class="readme-toolbar-btn" aria-label="Download CV (placeholder)">
+<a
+			href={profile.cv}
+			class="readme-toolbar-btn"
+			aria-label="Download CV"
+			download
+		>
 			Download CV
-		</button>
+		</a>
 	</div>
 	<div class="readme-body">
 		<h1 class="readme-h1">
 			<span class="readme-hash">#</span>
-			<Typewriter text="Your Name" on:done={() => (secondaryVisible = true)} />
+			<Typewriter text={profile.name} on:done={() => (secondaryVisible = true)} />
 		</h1>
 
 		{#if secondaryVisible}
 			<MaybeFade duration={300} class="readme-secondary">
 				{#snippet children()}
 					<blockquote class="readme-bq">
-						<p>Frontend Engineer · Lagos</p>
+						<p>{profile.title} · {profile.location}</p>
 					</blockquote>
 
-					<pre class="readme-fence"><code class="readme-code"><span class="readme-code-inner">/*
- * I ship responsive interfaces with strong TypeScript boundaries
- * and care about perceived performance, accessibility, and maintainability.
- */</span></code></pre>
+					<pre class="readme-fence"><code class="readme-code">/*{profile.bio.map(l => `\n${l}`).join('')}\n */</code></pre>
 
 					<p class="readme-links">
-						<a class="readme-badge" href="https://github.com/alexrivera">GitHub</a>
-						<a class="readme-badge" href="https://www.linkedin.com/in/alexrivera-dev">LinkedIn</a>
+						<a class="readme-badge" href={profile.github} target="_blank" rel="noopener noreferrer">[GitHub]</a>
+						<a class="readme-badge" href={profile.linkedin} target="_blank" rel="noopener noreferrer">[LinkedIn]</a>
 					</p>
 				{/snippet}
 			</MaybeFade>

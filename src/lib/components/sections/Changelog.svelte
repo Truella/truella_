@@ -3,7 +3,7 @@
 	import ChangelogBlock from './ChangelogBlock.svelte';
 </script>
 
-<div id="changelog" class="chg-root">
+<div id="changelog-section" class="chg-root">
 	<div class="chg-tab">
 		<svg class="chg-tab-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
 			<path

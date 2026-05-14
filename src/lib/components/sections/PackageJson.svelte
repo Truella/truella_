@@ -11,7 +11,7 @@
 </script>
 
 <div
-	id="package-json"
+	id="package-section"
 	class="pkg-root"
 	use:inview={{ threshold: 0.2, onInview: () => (revealed = true) }}
 >
