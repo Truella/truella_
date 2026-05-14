@@ -11,7 +11,7 @@ export const profile = {
 	],
 	github: "https://github.com/Truella",
 	linkedin: "https://linkedin.com/in/suleimanolayemimistura",
-	cv: "/cv.pdf",
+	cv: "/Suleiman_Olayemi_Mistura_Resume.pdf",
 };
 
 export const projects: Project[] = [
